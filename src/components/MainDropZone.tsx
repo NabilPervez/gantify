@@ -31,28 +31,54 @@ export const MainDropZone: React.FC = () => {
         }
     };
 
+    const handleDownloadTemplate = () => {
+        const csvContent = "data:text/csv;charset=utf-8,"
+            + "ID,Name,Start,End,Type,Progress,Dependencies\n"
+            + "1,Project Kickoff,2023-01-01,2023-01-02,task,100,\n"
+            + "2,Development,2023-01-03,2023-01-10,task,50,1";
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "ganttify_template.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     return (
-        <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-white dark:bg-[#101922] transition-colors duration-200 font-sans">
+        <div className="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden bg-white dark:bg-[#101922] transition-colors duration-200 font-sans">
             {/* Header */}
-            <header className="flex items-center px-4 py-4 justify-between bg-white dark:bg-[#101922] sticky top-0 z-10">
-                <div className="flex items-center gap-2">
-                    <div className="size-8 rounded bg-[#137fec] flex items-center justify-center">
+            <header className="flex items-center px-6 py-5 justify-between bg-white dark:bg-[#101922] sticky top-0 z-10 border-b border-transparent dark:border-[#283039]">
+                <div className="flex items-center gap-3">
+                    <div className="size-9 rounded-lg bg-[#137fec] flex items-center justify-center shadow-md shadow-blue-500/20">
                         <span className="material-symbols-outlined text-white text-xl">bar_chart</span>
                     </div>
                     <h2 className="text-[#111418] dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">Ganttify</h2>
                 </div>
-                <button className="flex items-center justify-center text-[#637588] dark:text-[#9dabb9] hover:text-[#137fec] transition-colors">
-                    <span className="text-base font-bold leading-normal tracking-[0.015em] mr-1">Help</span>
-                    <span className="material-symbols-outlined text-xl">help</span>
+                <button className="flex items-center justify-center text-[#637588] dark:text-[#9dabb9] hover:text-[#137fec] transition-colors gap-1">
+                    <span className="text-sm font-bold leading-normal">Help</span>
+                    <span className="material-symbols-outlined text-lg">help</span>
                 </button>
             </header>
 
             {/* Main Content */}
-            <main className="flex-1 flex flex-col p-4 gap-6 max-w-lg mx-auto w-full">
+            <main className="flex-1 flex flex-col justify-center items-center p-4 gap-8 max-w-2xl mx-auto w-full -mt-16">
+
+                {/* Intro */}
+                <div className="text-center space-y-2">
+                    <h1 className="text-3xl md:text-4xl font-extrabold text-[#111418] dark:text-white tracking-tight">
+                        Visualize Your Project
+                    </h1>
+                    <p className="text-[#637588] dark:text-[#9dabb9] text-base md:text-lg max-w-md mx-auto">
+                        Turn your spreadsheets into interactive Gantt charts in seconds.
+                    </p>
+                </div>
+
                 {/* Upload Hero Section */}
-                <section className="flex flex-col items-center justify-center w-full">
+                <div className="w-full max-w-xl">
                     <div
-                        className={`w-full flex flex-col items-center gap-6 rounded-xl border-2 border-dashed ${isDragging ? 'border-[#137fec] bg-blue-50 dark:bg-blue-900/10' : 'border-[#dce0e5] dark:border-[#3b4754] bg-[#fcfcfd] dark:bg-[#1c2630]'} px-6 py-12 transition-colors hover:border-[#137fec]/50 group cursor-pointer`}
+                        className={`w-full flex flex-col items-center gap-8 rounded-2xl border-2 border-dashed ${isDragging ? 'border-[#137fec] bg-blue-50 dark:bg-blue-900/10' : 'border-[#dce0e5] dark:border-[#3b4754] bg-[#fcfcfd] dark:bg-[#1c2630]'} px-8 py-16 transition-all duration-300 hover:border-[#137fec]/50 group cursor-pointer shadow-sm`}
                         onDragOver={handleDragOver}
                         onDragLeave={handleDragLeave}
                         onDrop={handleDrop}
@@ -67,98 +93,62 @@ export const MainDropZone: React.FC = () => {
                         />
 
                         {/* File Icons Visualization */}
-                        <div className="flex items-center justify-center gap-4 mb-2">
-                            <div className="flex flex-col items-center gap-2 group-hover:-translate-y-1 transition-transform duration-300">
-                                <div className="size-12 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center border border-green-200 dark:border-green-800">
-                                    <span className="material-symbols-outlined text-green-600 dark:text-green-400 text-2xl">table_view</span>
-                                </div>
+                        <div className="flex items-center justify-center gap-6 mb-2">
+                            <div className="flex flex-col items-center gap-2 group-hover:-translate-y-2 transition-transform duration-300">
+                                <span className="material-symbols-outlined text-green-500 text-5xl drop-shadow-sm">table_view</span>
                                 <span className="text-[10px] font-bold text-[#637588] dark:text-[#9dabb9] uppercase tracking-wider">CSV</span>
                             </div>
-                            <div className="flex flex-col items-center gap-2 -mt-6 group-hover:-translate-y-1 transition-transform duration-300 delay-75">
-                                <div className="size-14 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center border border-emerald-200 dark:border-emerald-800 shadow-sm">
-                                    <span className="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-3xl">grid_on</span>
-                                </div>
+                            <div className="flex flex-col items-center gap-2 -mt-6 group-hover:-translate-y-2 transition-transform duration-300 delay-75">
+                                <span className="material-symbols-outlined text-emerald-500 text-6xl drop-shadow-md">grid_on</span>
                                 <span className="text-[10px] font-bold text-[#637588] dark:text-[#9dabb9] uppercase tracking-wider">Excel</span>
                             </div>
-                            <div className="flex flex-col items-center gap-2 group-hover:-translate-y-1 transition-transform duration-300 delay-100">
-                                <div className="size-12 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center border border-amber-200 dark:border-amber-800">
-                                    <span className="material-symbols-outlined text-amber-600 dark:text-amber-400 text-2xl">data_object</span>
-                                </div>
+                            <div className="flex flex-col items-center gap-2 group-hover:-translate-y-2 transition-transform duration-300 delay-100">
+                                <span className="material-symbols-outlined text-amber-500 text-5xl drop-shadow-sm">data_object</span>
                                 <span className="text-[10px] font-bold text-[#637588] dark:text-[#9dabb9] uppercase tracking-wider">JSON</span>
                             </div>
                         </div>
 
-                        <div className="flex flex-col items-center gap-2 text-center">
-                            <h3 className="text-[#111418] dark:text-white text-xl font-bold leading-tight">Import Project Data</h3>
-                            <p className="text-[#637588] dark:text-[#9dabb9] text-sm font-normal leading-normal max-w-[280px]">
-                                Tap to browse or drag your project files here to visualize instantly.
+                        <div className="flex flex-col items-center gap-3 text-center">
+                            <h3 className="text-[#111418] dark:text-white text-xl font-bold">Import Data</h3>
+                            <button className="flex min-w-[160px] cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-xl h-12 px-6 bg-[#137fec] hover:bg-blue-600 text-white text-base font-bold shadow-lg shadow-blue-500/20 transition-all active:scale-95">
+                                <span className="material-symbols-outlined text-[24px]">folder_open</span>
+                                <div>Browse Files</div>
+                            </button>
+                            <p className="text-[#637588] dark:text-[#9dabb9] text-xs mt-2">
+                                Drag & Drop supported
                             </p>
                         </div>
-
-                        <button className="flex min-w-[140px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-[#137fec] hover:bg-blue-600 text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-lg shadow-blue-900/20 transition-all active:scale-95">
-                            <span className="material-symbols-outlined mr-2 text-[20px]">folder_open</span>
-                            <span className="truncate">Browse Files</span>
-                        </button>
                     </div>
-                </section>
 
-                {/* Privacy Chip */}
-                <div className="flex justify-center w-full">
-                    <div className="inline-flex h-9 items-center justify-center gap-x-2 rounded-full bg-[#e8eef3] dark:bg-[#283039] pl-3 pr-4 border border-transparent dark:border-[#3b4754]">
-                        <span className="material-symbols-outlined text-[#637588] dark:text-[#9dabb9] text-[18px]">lock</span>
-                        <p className="text-[#111418] dark:text-white text-xs font-medium leading-normal">Data stays strictly on your device</p>
+                    {/* Footer Actions */}
+                    <div className="flex items-center justify-between mt-6 px-2">
+                        <button
+                            onClick={(e) => { e.stopPropagation(); handleDownloadTemplate(); }}
+                            className="flex items-center gap-2 text-[#637588] dark:text-[#9dabb9] hover:text-[#137fec] dark:hover:text-white transition-colors text-sm font-medium"
+                        >
+                            <span className="material-symbols-outlined text-[18px]">download</span>
+                            Download Template
+                        </button>
+
+                        <button
+                            onClick={(e) => { e.stopPropagation(); loadSampleData(); }}
+                            className="flex items-center gap-2 text-[#137fec] hover:text-blue-600 transition-colors text-sm font-bold"
+                        >
+                            <span>Load Sample Data</span>
+                            <span className="material-symbols-outlined text-[18px] transform rotate-180">arrow_right_alt</span>
+                        </button>
                     </div>
                 </div>
 
-                {/* Recent Projects Section (Mockup for now as per design) */}
-                <section className="flex flex-col gap-2 mt-4">
-                    <div className="flex items-center justify-between px-1">
-                        <h3 className="text-[#111418] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Recent Projects</h3>
-                        <button onClick={loadSampleData} className="text-[#137fec] text-sm font-bold hover:underline">Sample</button>
+                {/* Privacy Chip */}
+                <div className="mt-8 flex justify-center w-full">
+                    <div className="inline-flex h-8 items-center justify-center gap-x-2 rounded-full bg-gray-100 dark:bg-[#1c2630] px-4 border border-transparent dark:border-[#3b4754]">
+                        <span className="material-symbols-outlined text-[#637588] dark:text-[#9dabb9] text-[16px]">lock</span>
+                        <p className="text-[#637588] dark:text-[#9dabb9] text-xs font-medium">Data stays on your device</p>
                     </div>
-                    <div className="flex flex-col gap-2">
-                        <div onClick={loadSampleData} className="flex items-center gap-4 bg-white dark:bg-[#1c2630] px-4 min-h-[72px] py-3 justify-between rounded-xl shadow-sm border border-[#e5e7eb] dark:border-[#2a3441] hover:bg-gray-50 dark:hover:bg-[#232e3a] transition-colors cursor-pointer group">
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center justify-center rounded-lg bg-[#137fec]/10 dark:bg-[#283039] shrink-0 size-12 group-hover:bg-[#137fec]/20 dark:group-hover:bg-[#343e4b] transition-colors">
-                                    <span className="material-symbols-outlined text-[#137fec] dark:text-white text-[24px]">timeline</span>
-                                </div>
-                                <div className="flex flex-col justify-center">
-                                    <p className="text-[#111418] dark:text-white text-base font-bold leading-normal line-clamp-1">Marketing Roadmap Q4</p>
-                                    <div className="flex items-center gap-2 mt-0.5">
-                                        <span className="material-symbols-outlined text-[#637588] dark:text-[#9dabb9] text-[14px]">history</span>
-                                        <p className="text-[#637588] dark:text-[#9dabb9] text-xs font-medium leading-normal line-clamp-1">Modified 2h ago</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="shrink-0">
-                                <span className="material-symbols-outlined text-[#9dabb9] group-hover:text-[#137fec] transition-colors text-[24px]">chevron_right</span>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-4 bg-white dark:bg-[#1c2630] px-4 min-h-[72px] py-3 justify-between rounded-xl shadow-sm border border-[#e5e7eb] dark:border-[#2a3441] hover:bg-gray-50 dark:hover:bg-[#232e3a] transition-colors cursor-pointer group">
-                            <div className="flex items-center gap-4">
-                                <div className="flex items-center justify-center rounded-lg bg-[#137fec]/10 dark:bg-[#283039] shrink-0 size-12 group-hover:bg-[#137fec]/20 dark:group-hover:bg-[#343e4b] transition-colors">
-                                    <span className="material-symbols-outlined text-[#137fec] dark:text-white text-[24px]">developer_board</span>
-                                </div>
-                                <div className="flex flex-col justify-center">
-                                    <p className="text-[#111418] dark:text-white text-base font-bold leading-normal line-clamp-1">Website Redesign</p>
-                                    <div className="flex items-center gap-2 mt-0.5">
-                                        <span className="material-symbols-outlined text-[#637588] dark:text-[#9dabb9] text-[14px]">history</span>
-                                        <p className="text-[#637588] dark:text-[#9dabb9] text-xs font-medium leading-normal line-clamp-1">Modified Yesterday</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="shrink-0">
-                                <span className="material-symbols-outlined text-[#9dabb9] group-hover:text-[#137fec] transition-colors text-[24px]">chevron_right</span>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </main>
+                </div>
 
-            {/* Floating Action Button */}
-            <button onClick={() => fileInputRef.current?.click()} className="fixed bottom-6 right-6 size-14 bg-[#137fec] rounded-full shadow-xl shadow-blue-900/30 flex items-center justify-center text-white hover:bg-blue-600 active:scale-95 transition-all z-20">
-                <span className="material-symbols-outlined text-3xl">add</span>
-            </button>
+            </main>
         </div>
     );
 };
