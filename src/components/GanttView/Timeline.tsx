@@ -24,7 +24,7 @@ export const Timeline: React.FC<TimelineProps> = ({ tasks, viewSettings, rowHeig
 
     // Sync scroll effect
     useEffect(() => {
-        if (listRef.current) {
+        if (listRef.current && typeof listRef.current.scrollTo === 'function') {
             listRef.current.scrollTo(syncScrollTop);
         }
     }, [syncScrollTop]);
@@ -114,14 +114,16 @@ export const Timeline: React.FC<TimelineProps> = ({ tasks, viewSettings, rowHeig
         onScroll(e.currentTarget.scrollLeft);
     };
 
+    const ListComponent = List as any;
+
     return (
         <div className="h-full flex flex-col bg-[#1a1a1a] overflow-hidden" style={{ width }}>
             <div style={{ width: contentWidth, minWidth: '100%' }}>
                 <Header />
-                <List
+                <ListComponent
                     rowCount={tasks.length}
                     rowHeight={rowHeight}
-                    listRef={listRef}
+                    ref={listRef}
                     onScroll={handleScroll}
                     style={{ overflowX: 'hidden', height: height - 40, width: Math.max(width, contentWidth) }}
                     rowComponent={Row as any}
