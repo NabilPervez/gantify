@@ -127,7 +127,8 @@ export const mapRawDataToGantt = (rawData: any[], fileName: string): GanttData =
         tasks,
         viewSettings: {
             zoom: 'week',
-            showDependencies: true
+            showDependencies: true,
+            rowHeight: 50
         }
     };
 };

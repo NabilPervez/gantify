@@ -1,8 +1,8 @@
 import React from 'react';
-import { useData } from '../context/DataContext';
+import { useDataContext } from '../context/DataContext';
 
 export const LayoutHeader: React.FC = () => {
-    const { ganttData, resetProject } = useData();
+    const { ganttData, resetProject } = useDataContext();
 
     const handleExportHTML = async () => {
         if (!ganttData) return;

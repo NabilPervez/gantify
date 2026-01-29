@@ -21,6 +21,7 @@ export interface ProjectMeta {
 export interface ViewSettings {
     zoom: 'day' | 'week' | 'month';
     showDependencies: boolean;
+    rowHeight: number;
 }
 
 export interface GanttData {

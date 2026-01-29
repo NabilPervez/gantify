@@ -1,7 +1,5 @@
 import React, { useMemo, useRef, useEffect, type CSSProperties } from 'react';
-import * as ReactWindow from 'react-window';
-// @ts-ignore
-const List = ReactWindow.FixedSizeList || (ReactWindow as any).default?.FixedSizeList;
+import { List } from 'react-window';
 import type { Task, ViewSettings } from '../../types';
 import { differenceInDays, addDays, format, isWeekend } from 'date-fns';
 
@@ -112,21 +110,23 @@ export const Timeline: React.FC<TimelineProps> = ({ tasks, viewSettings, rowHeig
         );
     };
 
+    const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+        onScroll(e.currentTarget.scrollLeft);
+    };
+
     return (
-        <div className="h-full flex flex-col bg-[#1a1a1a] overflow-x-auto overflow-y-hidden" style={{ width }}>
+        <div className="h-full flex flex-col bg-[#1a1a1a] overflow-hidden" style={{ width }}>
             <div style={{ width: contentWidth, minWidth: '100%' }}>
                 <Header />
                 <List
-                    height={height - 40}
-                    itemCount={tasks.length}
-                    itemSize={rowHeight}
-                    width={Math.max(width, contentWidth)}
-                    ref={listRef}
-                    onScroll={({ scrollOffset }: { scrollOffset: number }) => onScroll(scrollOffset)}
-                    style={{ overflowX: 'hidden' }}
-                >
-                    {Row}
-                </List>
+                    rowCount={tasks.length}
+                    rowHeight={rowHeight}
+                    listRef={listRef}
+                    onScroll={handleScroll}
+                    style={{ overflowX: 'hidden', height: height - 40, width: Math.max(width, contentWidth) }}
+                    rowComponent={Row as any}
+                    rowProps={{}}
+                />
             </div>
         </div>
     );

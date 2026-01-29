@@ -1,23 +1,17 @@
 import React from 'react';
-import { DataProvider, useData } from './context/DataContext';
+import { DataProvider, useDataContext } from './context/DataContext';
 import { MainDropZone } from './components/MainDropZone';
-import { LayoutHeader } from './components/LayoutHeader';
 import { GanttBoard } from './components/GanttView/GanttBoard';
-import { ErrorBoundary } from './components/ErrorBoundary';
+import { DataMapping } from './components/DataMapping';
 
 const AppContent: React.FC = () => {
-  const { ganttData } = useData();
-
-  if (!ganttData) {
-    return <MainDropZone />;
-  }
+  const { appState } = useDataContext();
 
   return (
-    <div className="flex flex-col h-screen bg-[#1a1a1a] text-white overflow-hidden font-sans">
-      <LayoutHeader />
-      <ErrorBoundary>
-        <GanttBoard />
-      </ErrorBoundary>
+    <div className="h-screen w-full bg-[#f6f7f8] dark:bg-[#101922] text-slate-900 dark:text-white">
+      {appState === 'upload' && <MainDropZone />}
+      {appState === 'mapping' && <DataMapping />}
+      {appState === 'view' && <GanttBoard />}
     </div>
   );
 };

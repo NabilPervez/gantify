@@ -1,7 +1,5 @@
-import React, { type CSSProperties } from 'react';
-import * as ReactWindow from 'react-window';
-// @ts-ignore
-const List = ReactWindow.FixedSizeList || (ReactWindow as any).default?.FixedSizeList;
+import React, { type CSSProperties, type UIEvent } from 'react';
+import { List } from 'react-window';
 import type { Task } from '../../types';
 import { format } from 'date-fns';
 
@@ -50,19 +48,24 @@ export const TaskList: React.FC<TaskListProps> = ({ tasks, rowHeight, height, wi
         );
     };
 
+    const handleScroll = (e: UIEvent<HTMLDivElement>) => {
+        if (onScroll) {
+            onScroll(e.currentTarget.scrollTop);
+        }
+    };
+
     return (
         <div className="flex flex-col border-r border-white/10 h-full bg-[#1a1a1a]">
             <ColumnHeader />
             <List
-                height={height - 40} // subtract header
-                itemCount={tasks.length}
-                itemSize={rowHeight} // 40px
-                width={width}
-                ref={listRef}
-                onScroll={onScroll ? ({ scrollOffset }: { scrollOffset: number }) => onScroll(scrollOffset) : undefined}
-            >
-                {Row}
-            </List>
+                rowCount={tasks.length}
+                rowHeight={rowHeight}
+                listRef={listRef}
+                onScroll={handleScroll}
+                rowComponent={Row as any}
+                style={{ height: height - 40, width }}
+                rowProps={{}}
+            />
         </div>
     );
 };
