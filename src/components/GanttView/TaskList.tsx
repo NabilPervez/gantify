@@ -1,7 +1,7 @@
 import React, { type CSSProperties, type UIEvent } from 'react';
 import { List } from 'react-window';
 import type { Task } from '../../types';
-import { format } from 'date-fns';
+import { format, differenceInBusinessDays } from 'date-fns';
 
 interface TaskListProps {
     tasks: Task[];
@@ -13,12 +13,16 @@ interface TaskListProps {
 }
 
 const ColumnHeader: React.FC = () => (
-    <div className="flex items-center h-10 border-b border-white/10 bg-[#242424] text-xs font-semibold text-gray-400">
-        <div className="w-8 flex-shrink-0 text-center border-r border-white/5">#</div>
-        <div className="flex-1 px-4 border-r border-white/5 truncate">Task Name</div>
-        <div className="w-24 px-2 border-r border-white/5 truncate">Start</div>
-        <div className="w-24 px-2 border-r border-white/5 truncate">End</div>
-        <div className="w-12 px-2 text-center">status</div>
+    <div className="flex items-center h-8 border-b border-r border-[#bfbfbf] bg-[#f0f0f0] text-[11px] font-bold text-[#333] select-none sticky top-0 z-10">
+        <div className="w-10 flex-shrink-0 text-center border-r border-[#bfbfbf] h-full flex items-center justify-center bg-[#f0f0f0]">ID</div>
+        <div className="w-8 flex-shrink-0 text-center border-r border-[#bfbfbf] h-full flex items-center justify-center bg-[#f0f0f0]">
+            <span className="material-symbols-outlined text-[14px]">info</span>
+        </div>
+        <div className="flex-1 px-2 border-r border-[#bfbfbf] h-full flex items-center whitespace-nowrap bg-[#f0f0f0]">Task Name</div>
+        <div className="w-20 px-2 border-r border-[#bfbfbf] h-full flex items-center bg-[#f0f0f0]">Duration</div>
+        <div className="w-24 px-2 border-r border-[#bfbfbf] h-full flex items-center bg-[#f0f0f0]">Start</div>
+        <div className="w-24 px-2 border-r border-[#bfbfbf] h-full flex items-center bg-[#f0f0f0]">Finish</div>
+        <div className="w-24 px-2 h-full flex items-center bg-[#f0f0f0]">Predecessors</div>
     </div>
 );
 
@@ -26,24 +30,29 @@ export const TaskList: React.FC<TaskListProps> = ({ tasks, rowHeight, height, wi
 
     const Row = ({ index, style }: { index: number; style: CSSProperties }) => {
         const task = tasks[index];
-        // Alternate row bg
-        const bgClass = index % 2 === 0 ? 'bg-white/[0.02]' : 'transparent';
+        const duration = differenceInBusinessDays(task.end, task.start) + 1;
+        const durationStr = `${duration} day${duration !== 1 ? 's' : ''}`;
+
+        // Indentation based on simple logic (if it has parent, visually indent? Data structure is flat list currently, assuming displayOrder implies hierarchy or type 'subtask' implies indentation)
+        // We'll use task.type for basic indentation
+        const indent = task.type === 'subtask' ? 24 : (task.type === 'task' ? 12 : 4);
+        const fontWeight = task.type === 'epic' ? 'font-bold' : 'font-normal';
 
         return (
-            <div style={style} className={`flex items-center text-sm text-gray-300 border-b border-white/5 ${bgClass} hover:bg-white/5 transition-colors`}>
-                <div className="w-8 flex-shrink-0 text-center text-gray-600 text-xs">{index + 1}</div>
-                <div className="flex-1 px-4 truncate flex items-center gap-2">
-                    {task.type === 'epic' && <span className="w-2 h-2 rounded-full bg-purple-500"></span>}
-                    {task.type === 'subtask' && <span className="ml-4 w-1 h-1 rounded-full bg-gray-500"></span>}
-                    {task.name}
+            <div style={style} className={`flex items-center text-[11px] text-[#333] bg-white border-b border-[#ebebeb] hover:bg-[#e6f2ff] transition-colors`}>
+                <div className="w-10 flex-shrink-0 text-center border-r border-[#ebebeb] h-full flex items-center justify-center bg-[#f9f9f9] text-gray-500">{index + 1}</div>
+                <div className="w-8 flex-shrink-0 text-center border-r border-[#ebebeb] h-full flex items-center justify-center">
+                    {task.type === 'epic' && <span className="material-symbols-outlined text-[14px] text-purple-600">folder</span>}
+                    {task.type === 'task' && <span className="material-symbols-outlined text-[14px] text-blue-500">task</span>}
+                    {task.type === 'subtask' && <span className="material-symbols-outlined text-[14px] text-gray-400">subdirectory_arrow_right</span>}
                 </div>
-                <div className="w-24 px-2 text-xs text-gray-500 truncate">{format(task.start, 'MMM d')}</div>
-                <div className="w-24 px-2 text-xs text-gray-500 truncate">{format(task.end, 'MMM d')}</div>
-                <div className="w-12 px-2 text-center text-xs">
-                    <span className={`px-1.5 py-0.5 rounded ${task.progress === 100 ? 'bg-green-500/20 text-green-400' : 'bg-blue-500/20 text-blue-400'}`}>
-                        {task.progress}%
-                    </span>
+                <div className="flex-1 px-2 border-r border-[#ebebeb] h-full flex items-center truncate text-left" style={{ paddingLeft: indent }}>
+                    <span className={fontWeight}>{task.name}</span>
                 </div>
+                <div className="w-20 px-2 border-r border-[#ebebeb] h-full flex items-center justify-end">{durationStr}</div>
+                <div className="w-24 px-2 border-r border-[#ebebeb] h-full flex items-center justify-end">{format(task.start, 'M/d/yyyy')}</div>
+                <div className="w-24 px-2 border-r border-[#ebebeb] h-full flex items-center justify-end">{format(task.end, 'M/d/yyyy')}</div>
+                <div className="w-24 px-2 h-full flex items-center justify-end text-gray-400">{task.dependencies?.join(', ')}</div>
             </div>
         );
     };
@@ -54,18 +63,23 @@ export const TaskList: React.FC<TaskListProps> = ({ tasks, rowHeight, height, wi
         }
     };
 
+    const ListComponent = List as any;
+
     return (
-        <div className="flex flex-col border-r border-white/10 h-full bg-[#1a1a1a]">
+        <div className="flex flex-col border-r border-[#bfbfbf] h-full bg-white select-none font-sans">
             <ColumnHeader />
-            <List
-                rowCount={tasks.length}
-                rowHeight={rowHeight}
-                listRef={listRef}
-                onScroll={handleScroll}
-                rowComponent={Row as any}
-                style={{ height: height - 40, width }}
-                rowProps={{}}
-            />
+            <div className="flex-1">
+                <ListComponent
+                    rowCount={tasks.length}
+                    rowHeight={rowHeight}
+                    width={width}
+                    height={height - 32} // header height adjustment
+                    ref={listRef}
+                    onScroll={handleScroll}
+                    rowComponent={Row as any}
+                    rowProps={{}}
+                />
+            </div>
         </div>
     );
 };
